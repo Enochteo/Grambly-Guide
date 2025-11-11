@@ -2,12 +2,12 @@ import os
 import openai
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationalRetrievalChain
+from langchain_classic.memory import ConversationBufferMemory
+from langchain_classic.chains.conversational_retrieval.base import ConversationalRetrievalChain
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_classic.prompts import PromptTemplate
 from vector2 import vectordb  # Import vector database
-
+from flask import send_from_directory
   
 # Load environment variables
 load_dotenv('grambly.env')
@@ -45,6 +45,10 @@ qa_chain = ConversationalRetrievalChain.from_llm(
 @app.route('/')
 def home():
     return render_template('new.html')
+
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
 
 @app.route('/ask', methods=['POST'])
 def ask():
